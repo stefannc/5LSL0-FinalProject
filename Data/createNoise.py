@@ -16,7 +16,7 @@ def generate(mu, sigma):
     x = np.random.normal(mu, sigma, size = N_SAMPLES)
     return x
 
-if 'noise' not in os.listdir('Data/train/audio/'):
+if 'noise' not in os.listdir('train/audio/'):
     print('No noise folder found in data, folder will be created')
     os.mkdir('Data/train/audio/noise') 
     print('Noise folder is created')
@@ -29,6 +29,6 @@ for i in range(0, n_output):
     noise = generate(means[i], stds[i])
     noise.astype(np.int16)
     name = 'noise_' + str(i+1) + '.wav'
-    wav.write('Data/train/audio/noise/' + name, FS, noise)
+    wav.write('train/audio/noise/' + name, FS, noise)
 
 print('Successfully created', i+1, 'noise .wav files')
