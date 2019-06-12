@@ -1,10 +1,8 @@
 import numpy as np
 import os
-from scipy import signal
 from scipy.io import wavfile
 
-PATH = os.getcwd()
-data_path = PATH + '/Data/train/audio/'
+data_path = '../Data/train/audio/'
 
 #Iterating over standard classes
 classes = ['yes', 'no', 'up', 'down', 'left', 'right',
