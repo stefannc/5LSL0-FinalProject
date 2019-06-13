@@ -54,7 +54,7 @@ final_test_path = '../test_files/audio/' # unzipped train and test data
 traingen1 = iter(DataGenerator(data_path=data_path,
                          data_listing=data_lists+'train_set.txt',
                          batch_size=64, 
-                         dims=(13,32),
+                         dims=(16000,1),
                          labels=labels))
 
 #traingen2 = generator2(data_path='Data/train/audio/',
@@ -65,7 +65,7 @@ traingen1 = iter(DataGenerator(data_path=data_path,
 testgen1 = iter(DataGenerator(data_path=data_path,
                          data_listing=data_lists+'test_set.txt',
                          batch_size=64, 
-                         dims=(13,32),
+                         dims=(16000,1),
                          labels=labels,
                         ))
 

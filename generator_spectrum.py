@@ -19,7 +19,6 @@ import tensorflow as tf
 from tensorflow import keras
 from scipy import signal
 import random
-import librosa
 #fs, data = wavfile.read('./output/audio.wav')
 
 class DataGenerator(keras.utils.Sequence):
@@ -68,6 +67,7 @@ class DataGenerator(keras.utils.Sequence):
         # Initialization
         X = np.empty((self.batch_size, self.dims[0]))
         y = np.empty((self.batch_size), dtype=int)
+        spectrum = np.empty([self.batch_size,99,161])
     
         # Generate data
         for i, ID in enumerate(items):
@@ -103,7 +103,7 @@ class DataGenerator(keras.utils.Sequence):
                                             nperseg=nperseg,
                                             noverlap=noverlap,
                                             detrend=False)
-            spectrum = np.log(spec.T.astype(np.float32) + eps) #Dit is dus de uiteindelijke output (99,81)
+            spectrum[i,] = np.log(spec.T.astype(np.float32) + eps) #Dit is dus de uiteindelijke output (99,81)
 
             # Store class
             y_temp = self.trainset[ID].split('/')[0]
