@@ -29,23 +29,35 @@ from Helpers.generator import DataGenerator, generator2
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
 
+## normalization options
+normalization = {"subtract_mean": True,
+                 "epsilon": 1e-8,           # prevent division by 0
+                 "normalize": "95",        # "none", "var", "std", "95", "97"
+                 "type": "sample"}          # "sample", "class"
+
+## evaluation metrics
+metrics=['acc']
+
+
 ## Create generator
-traingen1 = DataGenerator(data_path='Data/train/audio/',
-                         data_listing='Data/train/lists/train_set.txt',
+traingen1 = DataGenerator(data_path='../Data/train/audio/',
+                         data_listing='../Data/train/lists/train_set.txt',
                          batch_size=64, 
                          dims=(16000,),
-                         labels=labels)
+                         labels=labels,
+                         normalization=normalization)
 
-traingen2 = generator2(data_path='Data/train/audio/',
-                         data_listing='Data/train/lists/train_set.txt',
+traingen2 = generator2(data_path='.,/Data/train/audio/',
+                         data_listing='../Data/train/lists/train_set.txt',
                          labels=labels,
                          batch_size=64)
 
-testgen1 = DataGenerator(data_path='Data/train/audio/',
-                         data_listing='Data/train/lists/test_set.txt',
+testgen1 = DataGenerator(data_path='../Data/train/audio/',
+                         data_listing='../Data/train/lists/test_set.txt',
                          batch_size=64, 
                          dims=(16000,),
-                         labels=labels)
+                         labels=labels, 
+                         normalization=normalization)
 
 ## Create test model
 model = Sequential()
@@ -87,7 +99,9 @@ model.add(Activation('softmax'))
 model.summary()
 optimizer = Adam()
 
-model.compile(optimizer=optimizer, loss=categorical_crossentropy)
+model.compile(optimizer=optimizer, 
+              loss=categorical_crossentropy,
+              metrics=metrics)
 
 # Train model on dataset
 model.fit_generator(generator=traingen1,

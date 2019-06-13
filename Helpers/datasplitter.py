@@ -18,7 +18,7 @@ import random
 from tqdm import tqdm
 
 # parameters
-filepath_train = '../Data/train'
+filepath_train = '.../Data/train'
 validation_percentage = 10
 testing_percentage = 10
 

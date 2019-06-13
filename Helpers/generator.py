@@ -23,7 +23,7 @@ import random
 class DataGenerator(keras.utils.Sequence):
     'Create data generator using the keras class'    
     
-    def __init__(self, data_path, data_listing, batch_size, dims, labels):
+    def __init__(self, data_path, data_listing, batch_size, dims, labels, normalization):
         'Initializes generator'
         # Initialize generator
         self.batch_size = batch_size
@@ -35,6 +35,7 @@ class DataGenerator(keras.utils.Sequence):
         self.num_lines = len(self.trainset)
         self.batches = int(np.floor(self.num_lines/self.batch_size))
         self.shuffle = np.random.permutation(self.num_lines)
+        self.normalization = normalization
 
         
     def __len__(self):
@@ -66,21 +67,62 @@ class DataGenerator(keras.utils.Sequence):
         # Initialization
         X = np.empty((self.batch_size, self.dims[0]))
         y = np.empty((self.batch_size), dtype=int)
+        
+        ## TODO: Fetch signal class statistics from external file
+        
     
         # Generate data
         for i, ID in enumerate(items):
-            # Store sample
+            # Load samples from wav file
             _, x_temp = wavfile.read(self.data_path+self.trainset[ID])
+            
+            # Pad samples with zeros to 16000 samples 
             X[i,] = np.pad(x_temp, (0, 16000-len(x_temp)), 'constant')
+            
+            if self.normalization["type"]  == "sample":
+                # Normalize samples to sequence
+                X[i,] = self.__normalize(samples=X[i,])
+            elif self.normalization["type"] == "class":
+                print("IMPLEMENT")
+                raise
+            else:
+                print("normalization type does not exist")
+                raise
     
-            # Store class
+            # Fetch class from name
             y_temp = self.trainset[ID].split('/')[0]
+            
+            # Update class to allowed classess
             if y_temp in self.labels:
                 y[i] = self.labels.index(y_temp)
             else:
                 y[i] = len(self.labels)-1
     
         return  np.expand_dims(X,-1), keras.utils.to_categorical(y, num_classes=self.n_classes)
+    
+    def __normalize(self, samples):
+        ## subtract mean if desired
+        if self.normalization["subtract_mean"] == True:
+            temp = samples - np.mean(samples)
+        else:
+            temp = samples
+        
+        ## normalize to something
+        if self.normalization["normalize"] == "none":
+            pass
+        elif self.normalization["normalize"] == "var":
+            temp = temp/(np.var(temp)+self.normalization["epsilon"])
+        elif self.normalization["normalize"] == "std":
+            temp = temp/(np.std(temp)+self.normalization["epsilon"])
+        elif self.normalization["normalize"] == "95":
+            temp = temp/(np.quantile(temp, 0.95) + self.normalization["epsilon"])
+        elif self.normalization["normalize"] == "98":
+            temp = temp/(np.quantile(temp, 0.98) + self.normalization["epsilon"])
+        else: 
+            print("unknown normalization method")
+            raise
+        
+        return temp
     
     
 def generator2(data_path, data_listing, labels, batch_size):

@@ -20,7 +20,7 @@ import numpy as np
 #fs, data = wavfile.read('./output/audio.wav')
 
 # parameters
-filepath_train = '../Data/train'
+filepath_train = '.../Data/train'
 
 # create struct to save lengths and sampling frequencies
 lengths =[]
