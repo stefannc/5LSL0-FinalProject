@@ -17,7 +17,9 @@ import os
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+from scipy import signal
 import random
+import librosa
 #fs, data = wavfile.read('./output/audio.wav')
 
 class DataGenerator(keras.utils.Sequence):
@@ -73,9 +75,9 @@ class DataGenerator(keras.utils.Sequence):
             sample_rate, samples = wavfile.read(self.data_path+self.trainset[ID])
 
             # Downsampling (optional)
-            new_sample_rate = int(8e3)
-            samples = signal.resample(samples, int(new_sample_rate/sample_rate * samples.shape[0]))
-            sample_rate = new_sample_rate
+            # new_sample_rate = int(8e3)
+            # samples = signal.resample(samples, int(new_sample_rate/sample_rate * samples.shape[0]))
+            # sample_rate = new_sample_rate
 
             # VAD
             mean = np.mean(abs(samples))
