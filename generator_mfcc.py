@@ -68,6 +68,7 @@ class DataGenerator(keras.utils.Sequence):
         # Initialization
         X = np.empty((self.batch_size, self.dims[0]))
         y = np.empty((self.batch_size), dtype=int)
+        mfcc = np.empty(self.batch_size, 13,32)
     
         # Generate data
         for i, ID in enumerate(items):
@@ -88,12 +89,12 @@ class DataGenerator(keras.utils.Sequence):
             # Zero padding
             X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
             
-            # MFCC, returns a (13,16) matrix (afhankelijk van sample rate)
+            # MFCC, returns a (13,32) matrix (afhankelijk van sample rate)
             # Nog even kijken hoe het MFCC uiteindelijk gereturned kan worden
             Mel = librosa.feature.melspectrogram(X[i,], sr=sample_rate, n_mels=128)
             log_S = librosa.power_to_db(Mel, ref=np.max)
-            mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=13)
-            mfcc = librosa.feature.delta(mfcc, order=2) #Dit is dus de uiteindelijke output (13,16)
+            mfcc[i,] = librosa.feature.mfcc(S=log_S, n_mfcc=13)
+            mfcc[i,] = librosa.feature.delta(mfcc[i,], order=2) #Dit is dus de uiteindelijke output (13,32)
 
             # Store class
             y_temp = self.trainset[ID].split('/')[0]
