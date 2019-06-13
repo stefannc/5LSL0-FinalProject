@@ -46,43 +46,43 @@ normalization = {"subtract_mean": True,
 ## evaluation metrics
 metrics=['acc']
 
-data_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/audio'
-data_lists = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/lists'
-final_test_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/test/audio' # unzipped train and test data
+data_path = 'train/audio/'
+data_lists = ''
+final_test_path = '../test_files/audio/' # unzipped train and test data
 
 ## Create generator
-traingen1 = DataGenerator(data_path=data_path,
-                         data_listing=data_lists+'/train_set.txt',
+traingen1 = iter(DataGenerator(data_path=data_path,
+                         data_listing=data_lists+'train_set.txt',
                          batch_size=64, 
                          dims=(13,32),
-                         labels=labels)
+                         labels=labels))
 
 #traingen2 = generator2(data_path='Data/train/audio/',
 #                         data_listing='Data/train/lists/train_set.txt',
 #                         labels=labels,
 #                         batch_size=64)
 
-testgen1 = DataGenerator(data_path=data_path,
-                         data_listing=data_lists+'/test_set.txt',
+testgen1 = iter(DataGenerator(data_path=data_path,
+                         data_listing=data_lists+'test_set.txt',
                          batch_size=64, 
                          dims=(13,32),
                          labels=labels,
-                        )
+                        ))
 
 ## Create test model
-shape = (13,16,1)
+shape = (13,32,1)
 model = deep_cnn(shape, num_classes)
 
 #optimizer = Adam(lr = 0.0001)
 model.compile(optimizer='Adam', loss=categorical_crossentropy, metrics = metrics)
 
 # Train model on dataset
-num_lines = sum(1 for line in open(data_lists+'/train_set.txt'))
+num_lines = sum(1 for line in open(data_lists+'train_set.txt'))
 history = model.fit_generator(generator=traingen1,
                               steps_per_epoch= int(np.ceil(num_lines/batch_size)),
                               epochs=3,
                               verbose = 1)
-                              #validation_data=testgen1)
+                            #   validation_data=testgen1)
 
 y_files = os.listdir(final_test_path)
 #y_pred_proba = model.predict_generator(generator = finaltestgen, 
