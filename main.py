@@ -61,27 +61,27 @@ testgen1 = DataGenerator(data_path='../Data/train/audio/',
 
 ## Create test model
 model = Sequential()
-model.add(Conv1D(12, kernel_size=9, input_shape=(16000,1), padding="same"))
+model.add(Conv1D(12, kernel_size=101, input_shape=(16000,1), padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 
-model.add(Conv1D(12, kernel_size=9, padding="same"))
+model.add(Conv1D(12, kernel_size=101, padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 
-model.add(Conv1D(12, kernel_size=9, padding="same"))
+model.add(Conv1D(12, kernel_size=51, padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 
-model.add(Conv1D(12, kernel_size=7, padding="same"))
+model.add(Conv1D(12, kernel_size=51, padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 
-model.add(Conv1D(12, kernel_size=7, padding="same"))
+model.add(Conv1D(12, kernel_size=25, padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 
-model.add(Conv1D(12, kernel_size=7, padding="same"))
+model.add(Conv1D(12, kernel_size=25, padding="same"))
 model.add(LeakyReLU())
 model.add(MaxPooling1D(2))
 

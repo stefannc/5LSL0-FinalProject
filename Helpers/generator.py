@@ -79,16 +79,6 @@ class DataGenerator(keras.utils.Sequence):
             # Pad samples with zeros to 16000 samples 
             X[i,] = np.pad(x_temp, (0, 16000-len(x_temp)), 'constant')
             
-            if self.normalization["type"]  == "sample":
-                # Normalize samples to sequence
-                X[i,] = self.__normalize(samples=X[i,])
-            elif self.normalization["type"] == "class":
-                print("IMPLEMENT")
-                raise
-            else:
-                print("normalization type does not exist")
-                raise
-    
             # Fetch class from name
             y_temp = self.trainset[ID].split('/')[0]
             
@@ -97,6 +87,19 @@ class DataGenerator(keras.utils.Sequence):
                 y[i] = self.labels.index(y_temp)
             else:
                 y[i] = len(self.labels)-1
+                
+            
+            # normalize samples
+            if self.normalization["type"]  == "sample":
+                # Normalize samples to sequence
+                X[i,] = self.__normalize(samples=X[i,])
+            elif self.normalization["type"] == "class":
+                # Normalize samples to class statistics
+                print("IMPLEMENT")
+                raise
+            else:
+                print("normalization type does not exist")
+                raise
     
         return  np.expand_dims(X,-1), keras.utils.to_categorical(y, num_classes=self.n_classes)
     
