@@ -67,7 +67,7 @@ class DataGenerator(keras.utils.Sequence):
         # Initialization
         X = np.empty((self.batch_size, self.dims[0]))
         y = np.empty((self.batch_size), dtype=int)
-        spectrum = np.empty([self.batch_size,99,161])
+        spectrum = np.empty([self.batch_size,99,161]) # This shape should be used in main.py
     
         # Generate data
         for i, ID in enumerate(items):
@@ -88,7 +88,7 @@ class DataGenerator(keras.utils.Sequence):
             # Zero padding
             X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
             
-            # Get spectrum, returns (99,81) matrix (afhankelijk van sample rate)
+            # Get spectrum, returns (99,161) matrix (afhankelijk van sample rate)
             # ? only need the log of spec
             # ? freqs and times are/should be equal for all audio files
             # Nog even kijken hoe het spectrum uiteindelijk gereturned kan worden
@@ -103,7 +103,7 @@ class DataGenerator(keras.utils.Sequence):
                                             nperseg=nperseg,
                                             noverlap=noverlap,
                                             detrend=False)
-            spectrum[i,] = np.log(spec.T.astype(np.float32) + eps) #Dit is dus de uiteindelijke output (99,81)
+            spectrum[i,] = np.log(spec.T.astype(np.float32) + eps) #Dit is dus de uiteindelijke output (99,161)
 
             # Store class
             y_temp = self.trainset[ID].split('/')[0]
