@@ -70,21 +70,21 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(items):
             # Store sample
-            sample_rate, x_temp = wavfile.read(self.data_path+self.trainset[ID])
+            sample_rate, samples = wavfile.read(self.data_path+self.trainset[ID])
 
             # Downsampling (optional)
             new_sample_rate = int(8e3)
-            x_temp = signal.resample(x_temp, int(new_sample_rate/sample_rate * x_temp.shape[0]))
+            samples = signal.resample(samples, int(new_sample_rate/sample_rate * samples.shape[0]))
             sample_rate = new_sample_rate
 
             # VAD and move to 0
             mean = np.mean(abs(samples))
             first = np.argmax(abs(samples)>0.3*mean)
             last = len(samples) - int(np.argmax(abs(samples[::-1])>0.3*mean))
-            x_temp = x_temp[first:last]
+            samples = samples[first:last]
 
             # Zero padding
-            X[i,] = np.pad(x_temp, (0, sample_rate-len(x_temp)), 'constant')
+            X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
             
             # Get spectrum, returns (99,81) matrix (afhankelijk van sample rate)
             # ? only need the log of spec
@@ -110,4 +110,4 @@ class DataGenerator(keras.utils.Sequence):
             else:
                 y[i] = len(self.labels)-1
     
-        return  np.expand_dims(X,-1), keras.utils.to_categorical(y, num_classes=self.n_classes)
+        return  np.expand_dims(spectrum,-1), keras.utils.to_categorical(y, num_classes=self.n_classes)

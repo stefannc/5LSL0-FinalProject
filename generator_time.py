@@ -70,21 +70,21 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(items):
             # Store sample
-            sample_rate, x_temp = wavfile.read(self.data_path+self.trainset[ID])
+            sample_rate, samples = wavfile.read(self.data_path+self.trainset[ID])
 
             # Downsampling (optional)
             new_sample_rate = int(8e3)
-            x_temp = signal.resample(x_temp, int(new_sample_rate/sample_rate * x_temp.shape[0]))
+            samples = signal.resample(samples, int(new_sample_rate/sample_rate * samples.shape[0]))
             sample_rate = new_sample_rate
 
             # VAD
             mean = np.mean(abs(samples))
             first = np.argmax(abs(samples)>0.3*mean)
             last = len(samples) - int(np.argmax(abs(samples[::-1])>0.3*mean))
-            x_temp = x_temp[first:last]
+            samples = samples[first:last]
 
             # Zero padding
-            X[i,] = np.pad(x_temp, (0, sample_rate-len(x_temp)), 'constant')
+            X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
             
             # Store class
             y_temp = self.trainset[ID].split('/')[0]
