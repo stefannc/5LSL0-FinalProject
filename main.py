@@ -32,7 +32,7 @@ labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "
 ## normalization options
 normalization = {"subtract_mean": True,
                  "epsilon": 1e-8,           # prevent division by 0
-                 "normalize": "95",        # "none", "var", "std", "95", "97"
+                 "normalize": "95",         # "none", "var", "std", "95", "97"
                  "type": "sample"}          # "sample", "class"
 
 ## evaluation metrics
