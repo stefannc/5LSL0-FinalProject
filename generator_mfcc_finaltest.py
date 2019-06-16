@@ -1,14 +1,8 @@
+# -*- coding: utf-8 -*-
 """
-=============================================================================
-    Eindhoven University of Technology
-==============================================================================
+Created on Sun Jun 16 16:30:38 2019
 
-    Source Name   : generator.py
-                    Creates a generator for the Kaggle dataset
-    Author        : Bart van Erp
-    Date          : 06/06/2019
-
-==============================================================================
+@author: s141075
 """
 
 ## import libraries
@@ -25,7 +19,7 @@ import librosa
 class DataGenerator(keras.utils.Sequence):
     'Create data generator using the keras class'    
     
-    def __init__(self, data_path, data_listing, batch_size, dims_in, dims_out, labels):
+    def __init__(self, data_path, dataset, batch_size, dims_in, dims_out, labels):
         'Initializes generator'
         # Initialize generator
         self.batch_size = batch_size
@@ -34,7 +28,7 @@ class DataGenerator(keras.utils.Sequence):
         self.dims_out = dims_out
         self.labels = labels
         self.n_classes = len(self.labels)
-        self.trainset = [x[0:-1] for x in open(data_listing, "r")]
+        self.trainset = dataset
         self.num_lines = len(self.trainset)
         self.batches = int(np.floor(self.num_lines/self.batch_size))
         self.indexes = list(range(self.num_lines))

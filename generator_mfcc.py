@@ -3,7 +3,7 @@ from scipy.io import wavfile
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
+import keras
 from scipy import signal
 import random
 import librosa
