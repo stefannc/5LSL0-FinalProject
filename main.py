@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import openpyxl
+import sys
 
 ## Import tensorflow and keras
 import tensorflow as tf
@@ -29,13 +30,13 @@ from sklearn.metrics import accuracy_score
 ## Import selfmade moduels
 from generator_mfcc import DataGenerator
 from model import deep_cnn
-
+sys.path.insert(0, 'Data')
+import createNoise
 
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
 num_classes = len(labels)
 batch_size = 128
-
 
 ## normalization options
 normalization = {"subtract_mean": True,
@@ -46,6 +47,13 @@ normalization = {"subtract_mean": True,
 ## evaluation metrics
 metrics=['acc']
 
+## create silence
+USE_SILENCE = True
+N_SILENCE = 2000
+if USE_SILENCE:
+    createNoise.create(N_SILENCE)
+
+## paths
 data_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/audio/'
 data_lists = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/lists/'
 final_test_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/test/audio/' # unzipped train and test data
