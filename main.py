@@ -32,6 +32,7 @@ from generator_mfcc import DataGenerator
 from model import deep_cnn
 sys.path.insert(0, 'Data')
 import createNoise
+import datasplitter
 
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
@@ -52,6 +53,9 @@ USE_SILENCE = True
 N_SILENCE = 2000
 if USE_SILENCE:
     createNoise.create(N_SILENCE)
+    
+## create lists
+datasplitter()
 
 ## paths
 data_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/audio/'

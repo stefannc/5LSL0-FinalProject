@@ -18,9 +18,10 @@ import random
 from tqdm import tqdm
 
 # parameters
-filepath_train = '.../Data/train'
+filepath_train = 'Data/train'
 validation_percentage = 10
 testing_percentage = 10
+classes = ['yes', 'no', 'up', 'down', 'left', 'right', 'on', 'off', 'stop', 'go', 'silence']
 
 # open .txt files
 f_train = open(filepath_train+'/lists/train_set.txt',"w+")
@@ -34,6 +35,27 @@ for k1 in tqdm(folders, "processing folders"):
     # skip the background noise folder
     if k1 == "_background_noise_":
         continue
+    
+    # loop through the unknown files
+    elif k1 not in classes:
+        files = os.listdir(filepath_train+'/audio/'+k1)
+        
+        for k2 in files:
+            
+            #calculate probability
+            prob = random.random()*100
+            
+            #classify
+            if prob > validation_percentage+testing_percentage:
+                #train set
+                f_train.write('unknown/'+k2+'\n')
+            elif prob < testing_percentage:
+                #test set
+                f_test.write('unknown/'+k2+'\n')
+            else:
+                #validation set
+                f_validation.write('unknown/'+k2+'\n')
+        
     
     # Loop through all available files
     files = os.listdir(filepath_train+'/audio/'+k1)
