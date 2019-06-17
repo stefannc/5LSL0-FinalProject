@@ -58,22 +58,23 @@ for k1 in tqdm(folders, "processing folders"):
         
     
     # Loop through all available files
-    files = os.listdir(filepath_train+'/audio/'+k1)
-    for k2 in files:
-        
-        # calculate probability
-        prob = random.random()*100
-        
-        # classify
-        if prob > validation_percentage+testing_percentage:
-            # train set
-            f_train.write(k1+'/'+k2+'\n')
-        elif prob < testing_percentage:
-            # test set
-            f_test.write(k1+'/'+k2+'\n')
-        else:
-            # validation set
-            f_validation.write(k1+'/'+k2+'\n')
+    else:
+        files = os.listdir(filepath_train+'/audio/'+k1)
+        for k2 in files:
+            
+            # calculate probability
+            prob = random.random()*100
+            
+            # classify
+            if prob > validation_percentage+testing_percentage:
+                # train set
+                f_train.write(k1+'/'+k2+'\n')
+            elif prob < testing_percentage:
+                # test set
+                f_test.write(k1+'/'+k2+'\n')
+            else:
+                # validation set
+                f_validation.write(k1+'/'+k2+'\n')
 
 # close files
 f_train.close()
