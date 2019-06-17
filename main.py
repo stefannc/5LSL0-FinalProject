@@ -160,7 +160,7 @@ y_pred_proba = model.predict_generator(generator = finaltestgen,
                                      verbose=1)
 y_pred = np.argmax(y_pred_proba, axis=1)
 
-
+np.savetxt('probs.csv', y_pred_proba, delimiter=',')
 
 wb = openpyxl.Workbook()
 sheet = wb.active
