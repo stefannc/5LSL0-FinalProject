@@ -2,12 +2,10 @@
 =============================================================================
     Eindhoven University of Technology
 ==============================================================================
-
     Source Name   : main.py
                     Main ML file for the 5LSL0 project
     Author        : Bart van Erp
     Date          : 06/06/2019
-
 ==============================================================================
 """
 
@@ -27,12 +25,13 @@ from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
 from sklearn.metrics import accuracy_score
 
-## Import selfmade moduels
+## Import selfmade modules
 from generator_mfcc import DataGenerator
 from model import deep_cnn
 sys.path.insert(0, 'Data')
 import createNoise
-import datasplitter
+from datasplitter import datasplitter
+
 
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
@@ -58,27 +57,27 @@ if USE_SILENCE:
 datasplitter()
 
 ## paths
-data_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/audio/'
-data_lists = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/train/lists/'
-final_test_path = 'C:/Users/s141075/OneDrive - TU Eindhoven/Documenten/TUE/Master/Jaar 2/Kwartiel 4/Machine learning for signal processing/Final project/test/audio/' # unzipped train and test data
+data_path = 'Data/train/audio/'
+data_lists = 'Data/train/lists/'
+final_test_path = 'Data/test/audio/'
 
 ## Create generator
 traingen1 = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'train_set.txt',
                          batch_size=batch_size, 
                          dims_in=(16000,1),
-                         dims_out=(13,32),
+                         dims_out=(13,32),#(99,161),#(13,32), 
                          labels=labels)
 
 validgen1 = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'validation_set.txt',
                          batch_size=batch_size, 
                          dims_in=(16000,1),
-                         dims_out=(13,32),
+                         dims_out=(13,32),#(99,161),#(13,32),
                          labels=labels)
 
 ## Create test model
-shape = (13,32,1)
+shape = (13,32,1) #(99,161,1) 
 model = deep_cnn(shape, num_classes)
 
 #optimizer = Adam(lr = 0.0001)
@@ -120,7 +119,7 @@ testgen = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'test_set.txt',
                          batch_size=23, 
                          dims_in=(16000,1),
-                         dims_out=(13,32),
+                         dims_out=(13,32),#(99,161),#(13,32),
                          labels=labels)
 
 y_pred_proba = model.predict_generator(generator=testgen, 
@@ -153,7 +152,7 @@ finaltestgen = DataGenerator(data_path=final_test_path,
                              dataset = y_files,
                              batch_size=6,
                              dims_in=(16000,1),
-                             dims_out=(13,32),
+                             dims_out=(13,32),#(99,161),#
                              labels=labels)
 
 y_pred_proba = model.predict_generator(generator = finaltestgen,
