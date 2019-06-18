@@ -1,14 +1,5 @@
-"""
-=============================================================================
-    Eindhoven University of Technology
-==============================================================================
-    Source Name   : datasplitter.py
-                    Splits data in different sets and outputs txt files with 
-                    paths from ./Data/train/audio
-    Author        : Bart van Erp
-    Date          : 06/06/2019
-==============================================================================
-"""
+# 5LSL0 Final Assignment 
+# datasplitter
 
 # import libraries
 import os

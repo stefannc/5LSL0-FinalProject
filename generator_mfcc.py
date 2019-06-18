@@ -1,3 +1,7 @@
+# 5LSL0 Final Assignment 
+# Generator MFCC
+
+
 ## import libraries
 from scipy.io import wavfile
 import os

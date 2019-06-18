@@ -1,15 +1,5 @@
-"""
-=============================================================================
-    Eindhoven University of Technology
-==============================================================================
-
-    Source Name   : generator.py
-                    Creates a generator for the Kaggle dataset
-    Author        : Bart van Erp
-    Date          : 06/06/2019
-
-==============================================================================
-"""
+# 5LSL0 Final Assignment 
+# Generator MFCC test
 
 ## import libraries
 from scipy.io import wavfile

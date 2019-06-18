@@ -30,5 +30,3 @@ def deep_cnn(shape, num_classes, act = 'relu'):
     
     model.summary()
     return model
-
-

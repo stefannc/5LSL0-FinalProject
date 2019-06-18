@@ -1,13 +1,4 @@
-"""
-=============================================================================
-    Eindhoven University of Technology
-==============================================================================
-    Source Name   : main.py
-                    Main ML file for the 5LSL0 project
-    Author        : Bart van Erp
-    Date          : 06/06/2019
-==============================================================================
-"""
+# 5LSL0 Final Assignment 
 
 ## Import arbitrary libraries
 import numpy as np
@@ -36,7 +27,10 @@ from datasplitter import datasplitter
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
 num_classes = len(labels)
-batch_size = 128
+training_batch_size = 128
+test_batch_size = 64
+final_test_batch_size = 64
+
 
 ## normalization options
 normalization = {"subtract_mean": True,
@@ -64,14 +58,14 @@ final_test_path = 'Data/test/audio/'
 ## Create generator
 traingen1 = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'train_set.txt',
-                         batch_size=batch_size, 
+                         batch_size=training_batch_size, 
                          dims_in=(16000,1),
                          dims_out=(13,32),#(99,161),#(13,32), 
                          labels=labels)
 
 validgen1 = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'validation_set.txt',
-                         batch_size=batch_size, 
+                         batch_size=training_batch_size, 
                          dims_in=(16000,1),
                          dims_out=(13,32),#(99,161),#(13,32),
                          labels=labels)
@@ -88,7 +82,7 @@ num_lines_train = sum(1 for line in open(data_lists+'train_set.txt'))
 num_lines_valid = sum(1 for line in open(data_lists+'validation_set.txt'))
 
 history = model.fit_generator(generator=traingen1,
-                              epochs = 2,
+                              epochs = 1,
                               verbose = 1,
                               validation_data=validgen1)
 
@@ -99,7 +93,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'valid'], loc='upper left')
-plt.show()
+plt.savefig('model_accuracy.pdf')
 # summarize history for loss
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -107,7 +101,7 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'valid'], loc='upper left')
-plt.show()
+plt.savefig('model_loss.pdf')
 
 # save model
 model.save('model.h5')
@@ -117,7 +111,7 @@ from generator_mfcc_test import DataGenerator
 
 testgen = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'test_set.txt',
-                         batch_size=23, 
+                         batch_size=test_batch_size, 
                          dims_in=(16000,1),
                          dims_out=(13,32),#(99,161),#(13,32),
                          labels=labels)
@@ -131,7 +125,8 @@ with open(data_lists+'test_set.txt') as f:
     content = f.readlines()
 
 y_true = []
-for lbl in range(len(content)):
+# Added modulo to test batch size to make sure len(y_true) == len(y_pred)
+for lbl in range(len(content) - (len(content) % test_batch_size)):
     label = content[lbl].split('/')[0]
     if label in labels:
         y_true.append(labels.index(label))
@@ -141,8 +136,6 @@ for lbl in range(len(content)):
 acc_score = accuracy_score(y_true, y_pred)    
 print(acc_score)
 
-
-
 ## test final data for submission
 from generator_mfcc_finaltest import DataGenerator
 
@@ -150,7 +143,7 @@ y_files = os.listdir(final_test_path)
 
 finaltestgen = DataGenerator(data_path=final_test_path,
                              dataset = y_files,
-                             batch_size=6,
+                             batch_size=final_test_batch_size,
                              dims_in=(16000,1),
                              dims_out=(13,32),#(99,161),#
                              labels=labels)
@@ -159,8 +152,10 @@ y_pred_proba = model.predict_generator(generator = finaltestgen,
                                      verbose=1)
 y_pred = np.argmax(y_pred_proba, axis=1)
 
+# Save computed probabilities so that they can be used with the other models
 np.savetxt('probs.csv', y_pred_proba, delimiter=',')
 
+# Save the final outcome
 wb = openpyxl.Workbook()
 sheet = wb.active
 sheet.cell(row=1, column=1).value='fname,label'
