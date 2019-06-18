@@ -15,6 +15,7 @@ from tensorflow.keras.losses import MSE, categorical_crossentropy
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
 from sklearn.metrics import accuracy_score
+import bisect
 
 ## Import selfmade modules
 from generator_mfcc import DataGenerator
@@ -27,7 +28,7 @@ from datasplitter import datasplitter
 def getDivisors(x):
     divisors = []
     i = 1
-    while i<x:
+    for i in range(1,x):
         if(x%i == 0): 
             divisors.append(i)
         else: 
@@ -37,7 +38,7 @@ def getDivisors(x):
 
 def find_le(a, x):
     'Find rightmost value less than or equal to x'
-    i = bisect_right(a, x)
+    i = bisect.bisect_right(a, x)
     if i:
         return a[i-1]
     raise ValueError
