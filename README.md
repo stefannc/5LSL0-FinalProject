@@ -26,4 +26,4 @@ from generator_spectrum import DataGenerator
 from generator_spectrum_test import DataGenerator
 
 #test model for final submission:
-from generator_spectrumm_finaltest import DataGenerator
+from generator_spectrum_finaltest import DataGenerator
