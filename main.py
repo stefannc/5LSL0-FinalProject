@@ -24,12 +24,30 @@ import createNoise
 from datasplitter import datasplitter
 
 
+def getDivisors(x):
+    divisors = []
+    i = 1
+    while i<x:
+        if(x%i == 0): 
+            divisors.append(i)
+        else: 
+            continue
+        i+=1
+    return divisors
+
+def find_le(a, x):
+    'Find rightmost value less than or equal to x'
+    i = bisect_right(a, x)
+    if i:
+        return a[i-1]
+    raise ValueError
+
 ## Labels
 labels=("yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go", "silence", "unknown")
 num_classes = len(labels)
 training_batch_size = 128
-test_batch_size = 64
-final_test_batch_size = 64
+# test_batch_size = 28
+final_test_batch_size = 6
 
 
 ## normalization options
@@ -109,6 +127,14 @@ model.save('model.h5')
 ## test data
 from generator_mfcc_test import DataGenerator
 
+with open(data_lists+'test_set.txt') as f:
+    content = f.readlines()
+
+divisors_test = getDivisors(len(content))
+print(divisors_test)
+test_batch_size = find_le(divisors_test, 100)
+print(test_batch_size)
+
 testgen = DataGenerator(data_path=data_path,
                          data_listing=data_lists+'test_set.txt',
                          batch_size=test_batch_size, 
@@ -121,12 +147,11 @@ y_pred_proba = model.predict_generator(generator=testgen,
 
 y_pred = np.argmax(y_pred_proba, axis=1)
 
-with open(data_lists+'test_set.txt') as f:
-    content = f.readlines()
+
 
 y_true = []
 # Added modulo to test batch size to make sure len(y_true) == len(y_pred)
-for lbl in range(len(content) - (len(content) % test_batch_size)):
+for lbl in range(len(content)):
     label = content[lbl].split('/')[0]
     if label in labels:
         y_true.append(labels.index(label))
