@@ -16,7 +16,7 @@ from scipy.io import wavfile
 import os
 import numpy as np
 import tensorflow as tf
-import keras
+import tensorflow.keras as keras
 import pandas as pd
 from scipy.signal import decimate
 from scipy import signal
@@ -73,17 +73,18 @@ class DataGenerator(keras.utils.Sequence):
         self.noise_var = options["noise_var"]
         
         # check whether dimensions are satisfactory to data type chosen
-        if self.data_type == "speech":
-            if np.size(options["dims_output"]) != 1:
-                print("ERROR: output dimensions inconsistent with data type")
-        elif self.data_type == "spectrum":
-            if np.size(options["dims_output"]) != 2:
-                print("ERROR: output dimensions inconsistent with data type")
-        elif self.data_type == "mfcc":
-            if np.size(options["dims_output"]) != 2:
-                print("ERROR: output dimensions inconsistent with data type")
-        else:
-            print("ERROR: unknown data type")
+        if type(self.data_type) == tuple:
+            if self.data_type == "speech":
+                if np.size(options["dims_output"]) != 1:
+                    print("ERROR: output dimensions inconsistent with data type")
+            elif self.data_type == "spectrum":
+                if np.size(options["dims_output"]) != 2:
+                    print("ERROR: output dimensions inconsistent with data type")
+            elif self.data_type == "mfcc":
+                if np.size(options["dims_output"]) != 2:
+                    print("ERROR: output dimensions inconsistent with data type")
+            else:
+                print("ERROR: unknown data type")
             
         # check if downsample factor is int
         if not isinstance(self.downsample, int):
@@ -144,7 +145,14 @@ class DataGenerator(keras.utils.Sequence):
        
         # create empty structs for data
         data = np.empty(shape=(self.batch_size, int(self.sample_rate/self.downsample)))
-        X = np.empty(shape=((self.batch_size,)+self.dims_output))
+        if type(self.dims_output) == tuple:
+            # single output
+            X = np.empty(shape=((self.batch_size,)+self.dims_output))
+        else:
+            # multiple outputs
+            X1 = np.empty(shape=((self.batch_size,)+self.dims_output[0]))
+            X2 = np.empty(shape=((self.batch_size,)+self.dims_output[1]))
+            X3 = np.empty(shape=((self.batch_size,)+self.dims_output[2]))
         y= np.empty(shape=(self.batch_size,), dtype=np.int8)
         
         # loop through data set and process data segments
@@ -217,13 +225,19 @@ class DataGenerator(keras.utils.Sequence):
                 
             # conversion to desired format
             if self.data_type == "speech":
-                X[i,] = data[i]
+                if type(self.data_type)==tuple:
+                    X[i,] = data[i]
+                else:
+                    X1[i,] = data[i]
             elif self.data_type == "mfcc":
                 Mel = librosa.feature.melspectrogram(samples, sr=self.sample_rate, n_mels=128)
                 log_S = librosa.power_to_db(Mel, ref=np.max)
                 mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=13)
                 mfcc = librosa.feature.delta(mfcc, order=2)
-                X[i,] = mfcc
+                if type(self.data_type) == tuple:
+                    X[i,] = mfcc
+                else:
+                    X3[i,] = mfcc
             elif self.data_type == "spectrum":
                 window_size=20
                 step_size=10
@@ -236,18 +250,36 @@ class DataGenerator(keras.utils.Sequence):
                                             nperseg=nperseg,
                                             noverlap=noverlap,
                                             detrend=False)
-                X[i,] = np.log(spec.T.astype(np.float32) + eps) 
+                if type(self.data_type) == tuple:
+                    X[i,] = np.log(spec.T.astype(np.float32) + eps) 
+                else:
+                    X2[i,] = np.log(spec.T.astype(np.float32) + eps) 
+                    
+            elif type(self.data_type) == list:
+                pass
             else:
                 print("ERROR: data type unknown")
             
         # add noise to data           
-        if self.noise_var != 0:
-            X = X + np.random.normal(scale=self.noise_var, size=np.shape(X))
-            
-        # return entries
-        if self.return_label:
-            return X, y
+        if self.data_type ==tuple:
+            if self.noise_var != 0:
+                X = X + np.random.normal(scale=self.noise_var, size=np.shape(X))
         else:
-            return X
+            if self.noise_var != 0:
+                X1 = X1 + np.random.normal(scale=self.noise_var, size=np.shape(X1))
+                X2 = X2 + np.random.normal(scale=self.noise_var, size=np.shape(X2))
+                X3 = X3 + np.random.normal(scale=self.noise_var, size=np.shape(X3))
+        
+        # return entries
+        if self.data_type==tuple:
+            if self.return_label:
+                return np.expand_dims(X,-1), keras.utils.to_categorical(y, num_classes=len(self.labels))
+            else:
+                return np.expand_dims(X,-1)
+        else:
+            if self.return_label:
+                return [np.expand_dims(X1,-1), np.expand_dims(X2,-1), np.expand_dims(X3,-1)], keras.utils.to_categorical(y, num_classes=len(self.labels))
+            else:
+                return [np.expand_dims(X1,-1), np.expand_dims(X2,-1), np.expand_dims(X3,-1)]
         
         

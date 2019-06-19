@@ -20,30 +20,62 @@ import openpyxl
 ## Import tensorflow and keras
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.layers import Input, Dense, Conv1D, Conv2D, MaxPooling1D, LeakyReLU, AvgPool2D, UpSampling2D, ReLU, MaxPooling2D, Reshape, Flatten, Activation
+from tensorflow.keras.layers import Input, Dense, Conv1D, Conv2D, MaxPooling1D, LeakyReLU, AvgPool2D, UpSampling2D, ReLU, MaxPooling2D, Reshape, Flatten, Activation, Concatenate
 from tensorflow.keras.losses import MSE, categorical_crossentropy
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
 
 ## Import selfmade moduels
 from generator_new import DataGenerator
-from model import deep_cnn
-
+from model import deep_cnn2d_mfcc, deep_cnn1d_speech, deep_cnn2d_spectrum
 
 ## Import options
-from generator_options import train_speech_options, train_spectrum_options, train_mfcc_options, test_speech_options, test_spectrum_options, test_mfcc_options
+from generator_options import train_all_options, val_all_options, test_all_options
 
 ## Create generators
-traingen_speech = DataGenerator(train_speech_options)
-traingen_spectrum = DataGenerator(train_spectrum_options)
-traingen_mfcc = DataGenerator(train_mfcc_options)
-testgen_speech = DataGenerator(test_speech_options)
-testgen_spectrum = DataGenerator(test_spectrum_options)
-testgen_mfcc = DataGenerator(test_mfcc_options)
+traingen_all = DataGenerator(train_all_options)
+valgen_all = DataGenerator(val_all_options)
+testgen_all = DataGenerator(test_all_options)
 
-traingen_speech[1]
-traingen_spectrum[1]
-traingen_mfcc[1]
-testgen_speech[1]
-testgen_spectrum[1]
-testgen_mfcc[1]
+## Create models
+model1 = deep_cnn1d_speech(shape=(16000,1), num_classes=12)
+model2 = deep_cnn2d_spectrum(shape=(99,161,1), num_classes=12)
+model3 = deep_cnn2d_mfcc(shape=(13,32,1), num_classes=12)
+
+## Combine models
+output_merged = Concatenate()([model1.output,model2.output,model3.output])
+finaloutput = Dense(12, activation='softmax')(output_merged)
+Modeltotal = Model([model1.input,model2.input,model3.input], finaloutput)
+Modeltotal.summary()
+
+## Compile model
+Modeltotal.compile(optimizer='Adam', 
+                   loss = categorical_crossentropy,
+                   metrics=['acc'])
+
+## Train model
+history = Modeltotal.fit_generator(generator=traingen_all,
+                                   verbose = 1,
+                                   epochs = 2,
+                                   validation_data=valgen_all)
+
+Modeltotal.save('../models/model2.h5')
+
+# create figures (loss)
+plt.figure()
+plt.plot(history.history["loss"], label="training loss")
+plt.plot(history.history["val_loss"], label="validation loss")
+plt.grid()
+plt.legend()
+plt.xlabel("epoch")
+plt.ylabel("loss")
+plt.savefig("../figures/loss2.pdf")
+
+plt.figure()
+plt.plot(history.history["acc"], label="training accuracy")
+plt.plot(history.history["val_acc"], label="validation accuracy")
+plt.grid()
+plt.legend()
+plt.xlabel("epoch")
+plt.ylabel("accuracy")
+plt.savefig("../figures/acc2.pdf")
