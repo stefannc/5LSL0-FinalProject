@@ -20,7 +20,7 @@ import openpyxl
 ## Import tensorflow and keras
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.layers import Input, Dense, Conv1D, Conv2D, MaxPooling1D, LeakyReLU, AvgPool2D, UpSampling2D, ReLU, MaxPooling2D, Reshape, Flatten, Activation, Concatenate
+from tensorflow.keras.layers import Input, Dense, Conv1D, Conv2D, Dropout, MaxPooling1D, LeakyReLU, AvgPool2D, UpSampling2D, ReLU, MaxPooling2D, Reshape, Flatten, Activation, Concatenate
 from tensorflow.keras.losses import MSE, categorical_crossentropy
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import Adam
@@ -44,11 +44,19 @@ model3 = deep_cnn2d_mfcc(shape=(13,32,1), num_classes=12)
 
 ## Combine models
 output_merged = Concatenate()([model1.output,model2.output,model3.output])
+output_merged = Reshape((output_merged._shape_as_list()[1:]+[1]))(output_merged)
+output_merged = Dropout(0.5)(output_merged)
+output_merged = Conv1D(32, 3, padding="same", activation = 'relu', dilation_rate=64)(output_merged)
+output_merged = Conv1D(32, 3, padding="same", activation = 'relu')(output_merged)
+output_merged = MaxPooling1D(2, strides = 2, padding = 'same')(output_merged)
+output_merged = Conv1D(32, 3, padding="same", activation = 'relu')(output_merged)
+output_merged = Conv1D(32, 3, padding="same", activation = 'relu')(output_merged)
+output_merged = MaxPooling1D(2, strides = 2, padding = 'same')(output_merged)
+output_merged = Flatten()(output_merged)
 finaloutput = Dense(12, activation='softmax')(output_merged)
+
 Modeltotal = Model([model1.input,model2.input,model3.input], finaloutput)
 Modeltotal.summary()
-
-traingen_all[1]
 
 ## Compile model
 Modeltotal.compile(optimizer='Adam', 

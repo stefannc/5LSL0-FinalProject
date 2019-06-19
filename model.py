@@ -14,12 +14,15 @@ def deep_cnn2d_mfcc(shape, num_classes, act = 'relu'):
     model = Sequential()
     # apply 32 convolution filters of size 3x3 each
     model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
     
-    model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
     
-    model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
     
     model.add(Flatten())
@@ -33,13 +36,33 @@ def deep_cnn2d_spectrum(shape, num_classes, act = 'relu'):
     model = Sequential()
     # apply 32 convolution filters of size 3x3 each
     model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
     
-    model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
     
-    model.add(Conv2D(32, (3,3), padding="same", input_shape=shape, activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
     model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
+    
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
+    
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
+    
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
+    
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(Conv2D(32, (3,3), padding="same", activation = act))
+    model.add(MaxPooling2D((2,2), strides = (2,2), padding = 'same'))
+    
     
     model.add(Flatten())
     
@@ -52,24 +75,47 @@ def deep_cnn1d_speech(shape, num_classes, act = 'relu'):
     model = Sequential()
     # apply 32 convolution filters of size 3x3 each
     model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
+
+    model.add(Conv1D(32, 3, padding="same", activation = act))    
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     
-    model.add(Conv1D(32, 3, padding="same", input_shape=shape, activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))    
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
+    
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
+    
+    model.add(Conv1D(32, 3, padding="same", activation = act))    
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
+    
+    model.add(Conv1D(32, 3, padding="same", activation = act))
+    model.add(Conv1D(32, 3, padding="same", activation = act))
     model.add(MaxPooling1D(2, strides = 2, padding = 'same'))
     model.add(Flatten())
     

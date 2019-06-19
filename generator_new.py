@@ -177,8 +177,8 @@ class DataGenerator(keras.utils.Sequence):
             if self.VAD:
                 # find signal statistics and determine active voice segment
                 mean = np.mean(abs(samples))
-                first = np.argmax(abs(samples)>0.3*mean)
-                last = len(samples) - int(np.argmax(abs(samples[::-1])>0.3*mean))
+                first = np.argmax(abs(samples)>0.4*mean)
+                last = len(samples) - int(np.argmax(abs(samples[::-1])>0.4*mean))
                 # slice samples to retain voice
                 samples = samples[first:last]
 
@@ -224,12 +224,12 @@ class DataGenerator(keras.utils.Sequence):
                 data[i,] = samples
                 
             # conversion to desired format
-            if self.data_type == "speech":
+            if "speech" in self.data_type:
                 if type(self.data_type)==tuple:
                     X[i,] = data[i]
                 else:
                     X1[i,] = data[i]
-            elif self.data_type == "mfcc":
+            if "mfcc" in self.data_type:
                 Mel = librosa.feature.melspectrogram(samples, sr=self.sample_rate, n_mels=128)
                 log_S = librosa.power_to_db(Mel, ref=np.max)
                 mfcc = librosa.feature.mfcc(S=log_S, n_mfcc=13)
@@ -238,7 +238,7 @@ class DataGenerator(keras.utils.Sequence):
                     X[i,] = mfcc
                 else:
                     X3[i,] = mfcc
-            elif self.data_type == "spectrum":
+            if "spectrum" in self.data_type:
                 window_size=20
                 step_size=10
                 eps=1e-10
@@ -254,11 +254,6 @@ class DataGenerator(keras.utils.Sequence):
                     X[i,] = np.log(spec.T.astype(np.float32) + eps) 
                 else:
                     X2[i,] = np.log(spec.T.astype(np.float32) + eps) 
-                    
-            elif type(self.data_type) == list:
-                pass
-            else:
-                print("ERROR: data type unknown")
             
         # add noise to data           
         if self.data_type ==tuple:
