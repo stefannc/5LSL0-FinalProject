@@ -25,7 +25,7 @@ def deep_cnn(shape, num_classes, act = 'relu'):
     model.add(Flatten())
     
     model.add(Dense(64, activation = act))
-    #model.add(Dropout())
+    model.add(Dropout(0.4))
     model.add(Dense(num_classes, activation = 'softmax'))
     
     model.summary()

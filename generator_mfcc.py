@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 from scipy import signal
+import pandas as pd
 import random
 import librosa
 
@@ -28,7 +29,7 @@ class DataGenerator(keras.utils.Sequence):
         self.num_lines = len(self.trainset)
         self.batches = int(np.floor(self.num_lines/self.batch_size))
         self.shuffle = np.random.permutation(self.num_lines)
-
+        self.normalize_eps = 1e-8
         
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -60,6 +61,8 @@ class DataGenerator(keras.utils.Sequence):
         y = np.empty((self.batch_size), dtype=int)
         mfcc = np.empty([self.batch_size,self.dims_out[0], self.dims_out[1]])
     
+        stats = pd.read_csv("Statistics/statistics_timedomain.csv")
+        
         # Generate data
         for i, ID in enumerate(items):
             # Store sample
@@ -76,6 +79,17 @@ class DataGenerator(keras.utils.Sequence):
             last = len(samples) - int(np.argmax(abs(samples[::-1])>0.3*mean))
             samples = samples[first:last]
 
+            y_temp = self.trainset[ID].split('/')[0]
+            if y_temp in self.labels:
+                y[i] = self.labels.index(y_temp)
+            else:
+                y[i] = len(self.labels)-1
+
+            # normalization (subtraction of class mean)
+            samples = samples - stats[stats["class"]==self.labels[y[i]]]["mean"][y[i]]
+            # normalization (division by class std)
+            samples = samples/(self.normalize_eps + stats[stats["class"]==self.labels[y[i]]]["std"][y[i]]) 
+
             # Zero padding
             X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
             
@@ -84,12 +98,5 @@ class DataGenerator(keras.utils.Sequence):
             log_S = librosa.power_to_db(Mel, ref=np.max)
             mfcc[i,] = librosa.feature.mfcc(S=log_S, n_mfcc=13)
             mfcc[i,] = librosa.feature.delta(mfcc[i,], order=2)
-
-            # Store class
-            y_temp = self.trainset[ID].split('/')[0]
-            if y_temp in self.labels:
-                y[i] = self.labels.index(y_temp)
-            else:
-                y[i] = len(self.labels)-1
     
         return  np.expand_dims(mfcc,-1), keras.utils.to_categorical(y, num_classes=self.n_classes)

@@ -28,7 +28,7 @@ class DataGenerator(keras.utils.Sequence):
         self.num_lines = len(self.trainset)
         self.batches = int(np.floor(self.num_lines/self.batch_size))
         self.indexes = list(range(self.num_lines))
-
+        self.normalize_eps = 1e-8
         
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -70,6 +70,10 @@ class DataGenerator(keras.utils.Sequence):
             first = np.argmax(abs(samples)>0.3*mean)
             last = len(samples) - int(np.argmax(abs(samples[::-1])>0.3*mean))
             samples = samples[first:last]
+
+            # normalisation (per audio file)
+            samples = samples - np.mean(samples)
+            samples = samples/(self.normalize_eps+np.std(samples))
 
             # Zero padding
             X[i,] = np.pad(samples, (0, sample_rate-len(samples)), 'constant')
