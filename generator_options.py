@@ -162,7 +162,7 @@ train_all_options = {
     "subtract_mean": True,           # subtract the mean of the signal
     "normalize_type": "std",         # normalize the signal by dividing by None, "std" (class) or None, "std", "var", "95", "98" (sample)
     "normalize_eps": 1e-8,           # constant to prevent division by zero
-    "noise_var": 0.1                 # variance of additivie Gaussian noise
+    "noise_var": 0                   # variance of additivie Gaussian noise
     }
 
 val_all_options = {
@@ -177,28 +177,28 @@ val_all_options = {
     "shuffle_on_end": True,          # shuffle data order per epoch: True, False
     "VAD": True,                     # apply voice activity detection 
     "downsample": 1,                 # downsample factor (disable: 1)
-    "normalize_class": "class",      # normalize sample with respect to "class", "sample"
+    "normalize_class": "sample",      # normalize sample with respect to "class", "sample"
     "subtract_mean": True,           # subtract the mean of the signal
-    "normalize_type": "std",         # normalize the signal by dividing by None, "std" (class) or None, "std", "var", "95", "98" (sample)
+    "normalize_type": "95",         # normalize the signal by dividing by None, "std" (class) or None, "std", "var", "95", "98" (sample)
     "normalize_eps": 1e-8,           # constant to prevent division by zero
-    "noise_var": 0.1                 # variance of additivie Gaussian noise
+    "noise_var": 0                 # variance of additivie Gaussian noise
     }
 
 test_all_options = {
-    "return_label": True,            # return label: True, False
+    "return_label": False,            # return label: True, False
     "data_type": ["speech", "spectrum", "mfcc"],             # type of data output: "speech", "spectrum", "mfcc"
     "data_path": path_data,          # path to data folder
     "list_path": path_list_test,     # path to list
-    "batch_size": 32,                # number of data segments per batch
+    "batch_size": 1,                # number of data segments per batch
     "labels": labels,                # list of labels
     "dims_data": (16000,),           # dimensions of original data (+zero append)
     "dims_output": [(16000,), (99,161), (13,32)],          # output dimensions as tuple
     "shuffle_on_end": True,          # shuffle data order per epoch: True, False
     "VAD": True,                     # apply voice activity detection 
     "downsample": 1,                 # downsample factor (disable: 1)
-    "normalize_class": "class",      # normalize sample with respect to "class", "sample"
+    "normalize_class": "sample",      # normalize sample with respect to "class", "sample"
     "subtract_mean": True,           # subtract the mean of the signal
-    "normalize_type": "std",         # normalize the signal by dividing by None, "std" (class) or None, "std", "var", "95", "98" (sample)
+    "normalize_type": "95",         # normalize the signal by dividing by None, "std" (class) or None, "std", "var", "95", "98" (sample)
     "normalize_eps": 1e-8,           # constant to prevent division by zero
-    "noise_var": 0.1                 # variance of additivie Gaussian noise
+    "noise_var": 0                 # variance of additivie Gaussian noise
     }

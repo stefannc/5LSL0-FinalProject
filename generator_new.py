@@ -186,12 +186,12 @@ class DataGenerator(keras.utils.Sequence):
             if self.normalize_class == "class":
                 # subtract mean
                 if self.subtract_mean:
-                    samples = samples - float(self.stats[self.stats["class"]==self.labels[y[i]]]["mean"])
+                    samples = samples - self.stats[self.stats["class"]==self.labels[y[i]]]["mean"][y[i]]
                 # normalize
                 if self.normalize_type == None:
                     pass
                 elif self.normalize_type == "std":
-                    samples = samples/(self.normalize_eps + float(self.stats[self.stats["class"]==self.labels[y[i]]]["std"]))      
+                    samples = samples/(self.normalize_eps + self.stats[self.stats["class"]==self.labels[y[i]]]["std"][y[i]])      
             # normalize per sample
             elif self.normalize_class == "sample":
                 # subtract mean
@@ -281,5 +281,4 @@ class DataGenerator(keras.utils.Sequence):
                 return [np.expand_dims(X1,-1), np.expand_dims(X2,-1), np.expand_dims(X3,-1)], keras.utils.to_categorical(y, num_classes=len(self.labels))
             else:
                 return [np.expand_dims(X1,-1), np.expand_dims(X2,-1), np.expand_dims(X3,-1)]
-        
         

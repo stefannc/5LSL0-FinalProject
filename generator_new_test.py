@@ -48,6 +48,8 @@ finaloutput = Dense(12, activation='softmax')(output_merged)
 Modeltotal = Model([model1.input,model2.input,model3.input], finaloutput)
 Modeltotal.summary()
 
+traingen_all[1]
+
 ## Compile model
 Modeltotal.compile(optimizer='Adam', 
                    loss = categorical_crossentropy,
@@ -59,7 +61,7 @@ history = Modeltotal.fit_generator(generator=traingen_all,
                                    epochs = 2,
                                    validation_data=valgen_all)
 
-Modeltotal.save('../models/model2.h5')
+Modeltotal.save('../models/model3.h5')
 
 # create figures (loss)
 plt.figure()
@@ -69,7 +71,7 @@ plt.grid()
 plt.legend()
 plt.xlabel("epoch")
 plt.ylabel("loss")
-plt.savefig("../figures/loss2.pdf")
+plt.savefig("../figures/loss3.pdf")
 
 plt.figure()
 plt.plot(history.history["acc"], label="training accuracy")
@@ -78,4 +80,4 @@ plt.grid()
 plt.legend()
 plt.xlabel("epoch")
 plt.ylabel("accuracy")
-plt.savefig("../figures/acc2.pdf")
+plt.savefig("../figures/acc3.pdf")
