@@ -13,6 +13,8 @@
 
 ## Set paths to data and list
 path_data = "../Data/train/audio/"
+path_data_test = "../Data/test/audio/"
+path_list_test2 = "../Data/test/lists/test_set.txt"
 path_list_train = "../Data/train/lists/train_set.txt"
 path_list_test = "../Data/train/lists/test_set.txt"
 
@@ -187,13 +189,13 @@ val_all_options = {
 test_all_options = {
     "return_label": False,            # return label: True, False
     "data_type": ["speech", "spectrum", "mfcc"],             # type of data output: "speech", "spectrum", "mfcc"
-    "data_path": path_data,          # path to data folder
-    "list_path": path_list_test,     # path to list
-    "batch_size": 1,                # number of data segments per batch
+    "data_path": path_data_test,          # path to data folder
+    "list_path": path_list_test2,     # path to list
+    "batch_size": 6,                # number of data segments per batch
     "labels": labels,                # list of labels
     "dims_data": (16000,),           # dimensions of original data (+zero append)
     "dims_output": [(16000,), (99,161), (13,32)],          # output dimensions as tuple
-    "shuffle_on_end": True,          # shuffle data order per epoch: True, False
+    "shuffle_on_end": False,          # shuffle data order per epoch: True, False
     "VAD": True,                     # apply voice activity detection 
     "downsample": 1,                 # downsample factor (disable: 1)
     "normalize_class": "sample",      # normalize sample with respect to "class", "sample"

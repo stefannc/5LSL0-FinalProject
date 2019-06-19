@@ -134,8 +134,8 @@ class DataGenerator(keras.utils.Sequence):
         if self.shuffle_on_end:
             return np.random.permutation(len(self.data_files))
         else:
-            return np.linspace(0, len(self.data_files)-1, len(self.data_files))
-        
+            return [i for i in range(len(self.data_files)-1)]
+                    
         
     def generate_batch(self, indices):
         """
