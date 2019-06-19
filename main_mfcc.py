@@ -20,7 +20,7 @@ import bisect
 
 ## Import selfmade modules
 from generator_mfcc import DataGenerator
-from model import deep_cnn
+from model_mfcc import deep_cnn
 sys.path.insert(0, 'Data')
 import createNoise
 from datasplitter import datasplitter
