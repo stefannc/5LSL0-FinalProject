@@ -24,7 +24,7 @@ import csv
 
 
 ## Load model
-model = load_model('../models/model2.h5')
+model = load_model('../models/model3.h5')
 
 ## create classes
 labels = ('yes', 'no', 'up', 'down', 'left', 'right', 'on', 'off', 'stop', 'go', 'silence', 'unknown')
@@ -49,7 +49,7 @@ y_pred = np.argmax(y_pred, axis=1)
 np.savetxt('probs.csv', y_pred, delimiter=',')
 
 datafiles = os.listdir('../Data/test/audio')
-with open('model2.csv', mode='w', newline='') as employee_file:
+with open('model3.csv', mode='w', newline='') as employee_file:
     employee_writer = csv.writer(employee_file, delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
     employee_writer.writerow(["fname", "label"])
     for i, file in enumerate(datafiles):
