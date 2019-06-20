@@ -45,7 +45,7 @@ model3 = deep_cnn2d_mfcc(shape=(13,32,1), num_classes=12)
 ## Combine models
 output_merged = Concatenate()([model1.output,model2.output,model3.output])
 #output_merged = Reshape((output_merged._shape_as_list()[1:]+[1]))(output_merged)
-output_merged = Dropout(0.5)(output_merged)
+#output_merged = Dropout(0.5)(output_merged)
 #output_merged = Conv1D(32, 3, padding="same", activation = 'relu', dilation_rate=64)(output_merged)
 #output_merged = Conv1D(32, 3, padding="same", activation = 'relu')(output_merged)
 #output_merged = MaxPooling1D(2, strides = 2, padding = 'same')(output_merged)
@@ -63,13 +63,27 @@ Modeltotal.compile(optimizer='Adam',
                    loss = categorical_crossentropy,
                    metrics=['acc'])
 
+class_weight = {0: 1.,
+                1: 1.,
+                2: 1.,
+                3: 1.,
+                4: 1.,
+                6: 1.,
+                5: 1.,
+                7: 1.,
+                8: 1.,
+                9: 1.,
+                10: 1.,
+                11: 0.05}
+
 ## Train model
 history = Modeltotal.fit_generator(generator=traingen_all,
                                    verbose = 1,
                                    epochs = 10,
-                                   validation_data=valgen_all)
+                                   validation_data=valgen_all,
+                                   class_weight=class_weight)
 
-Modeltotal.save('../models/model3.h5')
+Modeltotal.save('../models/model4.h5')
 
 # create figures (loss)
 plt.figure()
@@ -79,7 +93,7 @@ plt.grid()
 plt.legend()
 plt.xlabel("epoch")
 plt.ylabel("loss")
-plt.savefig("../figures/loss3.pdf")
+plt.savefig("../figures/loss4.pdf")
 
 plt.figure()
 plt.plot(history.history["acc"], label="training accuracy")
@@ -88,4 +102,4 @@ plt.grid()
 plt.legend()
 plt.xlabel("epoch")
 plt.ylabel("accuracy")
-plt.savefig("../figures/acc3.pdf")
+plt.savefig("../figures/acc4.pdf")

@@ -18,7 +18,7 @@ import random
 from tqdm import tqdm
 
 # parameters
-filepath_train = 'Data/train'
+filepath_train = '../Data/train'
 validation_percentage = 10
 testing_percentage = 10
 classes = ['yes', 'no', 'up', 'down', 'left', 'right', 'on', 'off', 'stop', 'go', 'silence']
@@ -48,13 +48,13 @@ for k1 in tqdm(folders, "processing folders"):
             #classify
             if prob > validation_percentage+testing_percentage:
                 #train set
-                f_train.write('unknown/'+k2+'\n')
+                f_train.write(k1+'/'+k2+'\n')
             elif prob < testing_percentage:
                 #test set
-                f_test.write('unknown/'+k2+'\n')
+                f_test.write(k1+'/'+k2+'\n')
             else:
                 #validation set
-                f_validation.write('unknown/'+k2+'\n')
+                f_validation.write(k1+'/'+k2+'\n')
         
     
     # Loop through all available files

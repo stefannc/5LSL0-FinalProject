@@ -17,14 +17,14 @@ def create(n):
     SIGMA_SIGMA = 151.505 #std of std
     FS = 16000 #Hz
     
-    if 'silence' not in os.listdir('Data/train/audio/'):
+    if 'silence' not in os.listdir('../Data/train/audio/'):
         print('No silence folder found in data, folder will be created')
-        os.mkdir('Data/train/audio/silence') 
+        os.mkdir('../Data/train/audio/silence') 
         print('Silence folder is created')
         n_needed = n
         count = 0
     else:
-        count = len(os.listdir('Data/train/audio/silence/'))
+        count = len(os.listdir('../Data/train/audio/silence/'))
         if count == n:
             print(n, 'silence files found. No new ones will be created')
             return
@@ -40,7 +40,7 @@ def create(n):
         noise = generate(means[i-count], stds[i-count])
         noise.astype(np.int16)
         name = 'silence_' + str(i+1) + '.wav'
-        wav.write('Data/train/audio/silence/' + name, FS, noise)
+        wav.write('../Data/train/audio/silence/' + name, FS, noise)
     
     if create:
         print('Successfully created', i+1, 'silence .wav files')
